@@ -13,6 +13,7 @@ using Shadowsocks.Controller;
 using Shadowsocks.Model;
 using Shadowsocks.Properties;
 using Shadowsocks.Util;
+using System.Linq;
 
 namespace Shadowsocks.View
 {
@@ -112,8 +113,8 @@ namespace Shadowsocks.View
 
             Icon newIcon;
 
-            bool hasInbound = controller.traffic.Last.inboundIncreasement > 0;
-            bool hasOutbound = controller.traffic.Last.outboundIncreasement > 0;
+            bool hasInbound = controller.trafficPerSecondQueue.Last().inboundIncreasement > 0;
+            bool hasOutbound = controller.trafficPerSecondQueue.Last().outboundIncreasement > 0;
 
             if (hasInbound && hasOutbound)
                 newIcon = icon_both;
@@ -287,16 +288,18 @@ namespace Shadowsocks.View
                 this.AutoStartupItem = CreateMenuItem("Start on Boot", new EventHandler(this.AutoStartupItem_Click)),
                 this.ShareOverLANItem = CreateMenuItem("Allow Clients from LAN", new EventHandler(this.ShareOverLANItem_Click)),
                 new MenuItem("-"),
-                CreateMenuItem("Show Logs...", new EventHandler(this.ShowLogItem_Click)),
-                this.VerboseLoggingToggleItem = CreateMenuItem( "Verbose Logging", new EventHandler(this.VerboseLoggingToggleItem_Click) ),
                 this.hotKeyItem = CreateMenuItem("Edit Hotkeys...", new EventHandler(this.hotKeyItem_Click)),
-                CreateMenuGroup("Updates...", new MenuItem[] {
-                    CreateMenuItem("Check for Updates...", new EventHandler(this.checkUpdatesItem_Click)),
-                    new MenuItem("-"),
-                    this.autoCheckUpdatesToggleItem = CreateMenuItem("Check for Updates at Startup", new EventHandler(this.autoCheckUpdatesToggleItem_Click)),
-                    this.checkPreReleaseToggleItem = CreateMenuItem("Check Pre-release Version", new EventHandler(this.checkPreReleaseToggleItem_Click)),
+                CreateMenuGroup("Help", new MenuItem[] {
+                    CreateMenuItem("Show Logs...", new EventHandler(this.ShowLogItem_Click)),
+                    this.VerboseLoggingToggleItem = CreateMenuItem( "Verbose Logging", new EventHandler(this.VerboseLoggingToggleItem_Click) ),
+                    CreateMenuGroup("Updates...", new MenuItem[] {
+                        CreateMenuItem("Check for Updates...", new EventHandler(this.checkUpdatesItem_Click)),
+                        new MenuItem("-"),
+                        this.autoCheckUpdatesToggleItem = CreateMenuItem("Check for Updates at Startup", new EventHandler(this.autoCheckUpdatesToggleItem_Click)),
+                        this.checkPreReleaseToggleItem = CreateMenuItem("Check Pre-release Version", new EventHandler(this.checkPreReleaseToggleItem_Click)),
+                    }),
+                    CreateMenuItem("About...", new EventHandler(this.AboutItem_Click)),
                 }),
-                CreateMenuItem("About...", new EventHandler(this.AboutItem_Click)),
                 new MenuItem("-"),
                 CreateMenuItem("Quit", new EventHandler(this.Quit_Click))
             });
@@ -656,7 +659,7 @@ namespace Shadowsocks.View
 
         private void QRCodeItem_Click(object sender, EventArgs e)
         {
-            QRCodeForm qrCodeForm = new QRCodeForm(controller.GetQRCodeForCurrentServer());
+            QRCodeForm qrCodeForm = new QRCodeForm(controller.GetServerURLForCurrentServer());
             //qrCodeForm.Icon = this.Icon;
             // TODO
             qrCodeForm.Show();

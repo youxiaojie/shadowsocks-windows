@@ -1,3 +1,41 @@
+4.0.7 2017-12-09
+- Fix QR code and ss:// protocol import issue
+- Add an option to show password
+- User rules have higher priority in PAC file
+- Bug fixes and improvements
+
+4.0.6 2017-09-09
+- SIP002 support
+- SIP003 support
+
+4.0.5 2017-08-09
+- Fix crash when user-wininet.json fail to parse. (#1178)
+- Bug fixes and improvements.
+
+4.0.4 2017-06-01
+- Save user wininet settings as user-wininet.json
+- Improve performance of aes-256-gcm
+
+4.0.2 2017-05-19
+- Fix legacy key derivation
+- Bug fixes and improvements
+
+4.0.1 2017-04-08
+- Fix UDP relay
+- Allow to add multiple servers via Shadowsocks URL
+- Bug fixes and improvements
+
+4.0 2017-04-04
+- Add AEAD ciphers support, removed OTA
+- I18N: add Japanese support, update Traditional Chinese strings
+- sysproxy: restore user settings when system proxy is turned off
+- Bug fixes and improvements
+
+3.4.3 2017-1-11
+- Make the previous portable mode as default
+- Refine networking by Noisyfox
+- Bug fixes and improvements
+
 3.4.2.1 2016-12-30
 - Refine Traditional Chinese translation by LNDDYL
 - sysproxy: reduce false positives on virus detection

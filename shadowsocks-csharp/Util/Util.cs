@@ -12,56 +12,39 @@ namespace Shadowsocks.Util
     public struct BandwidthScaleInfo
     {
         public float value;
-        public string unit_name;
+        public string unitName;
         public long unit;
 
-        public BandwidthScaleInfo(float value, string unit_name, long unit)
+        public BandwidthScaleInfo(float value, string unitName, long unit)
         {
             this.value = value;
-            this.unit_name = unit_name;
+            this.unitName = unitName;
             this.unit = unit;
         }
     }
 
     public static class Utils
     {
-        private static bool? _portableMode;
-        private static string TempPath = null;
-
-        public static bool IsPortableMode()
-        {
-            if (!_portableMode.HasValue)
-            {
-                _portableMode = File.Exists(Path.Combine(Application.StartupPath, "shadowsocks_portable_mode.txt"));
-            }
-
-            return _portableMode.Value;
-        }
+        private static string _tempPath = null;
 
         // return path to store temporary files
         public static string GetTempPath()
         {
-            if (TempPath == null)
+            if (_tempPath == null)
             {
-                if (IsPortableMode())
-                    try
-                    {
-                        Directory.CreateDirectory(Path.Combine(Application.StartupPath, "temp"));
-                    }
-                    catch (Exception e)
-                    {
-                        TempPath = Path.GetTempPath();
-                        Logging.LogUsefulException(e);
-                    }
-                    finally
-                    {
-                        // don't use "/", it will fail when we call explorer /select xxx/temp\xxx.log
-                        TempPath = Path.Combine(Application.StartupPath, "temp");
-                    }
-                else
-                    TempPath = Path.GetTempPath();
+                try
+                {
+                    Directory.CreateDirectory(Path.Combine(Application.StartupPath, "ss_win_temp"));
+                    // don't use "/", it will fail when we call explorer /select xxx/ss_win_temp\xxx.log
+                    _tempPath = Path.Combine(Application.StartupPath, "ss_win_temp");
+                }
+                catch (Exception e)
+                {
+                    Logging.Error(e);
+                    throw;
+                }
             }
-            return TempPath;
+            return _tempPath;
         }
 
         // return a full path with filename combined which pointed to the temporary directory
@@ -128,7 +111,7 @@ namespace Shadowsocks.Util
         public static string FormatBandwidth(long n)
         {
             var result = GetBandwidthScale(n);
-            return $"{result.value:0.##}{result.unit_name}";
+            return $"{result.value:0.##}{result.unitName}";
         }
 
         public static string FormatBytes(long bytes)
